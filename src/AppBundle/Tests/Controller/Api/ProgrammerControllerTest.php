@@ -8,7 +8,7 @@ class ProgrammerControllerTest extends ApiTestCase
 {
     public function testPOST()
     {
-		$nickname = 'ObjectOrienter'.rand(0, 999);;
+		$nickname = 'ObjectOrienter';;
 		$data = array(
 			'nickname' => $nickname,
 			'avatarNumber' => 5,

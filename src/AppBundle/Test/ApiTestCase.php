@@ -2,9 +2,11 @@
 
 namespace AppBundle\Test;
 
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use GuzzleHttp\Client;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class ApiTestCase extends \PHPUnit_Framework_TestCase
+class ApiTestCase extends KernelTestCase
 {
 	private static $staticClient;
 
@@ -21,10 +23,33 @@ class ApiTestCase extends \PHPUnit_Framework_TestCase
 				'exceptions' => false
 			]
 		]);
+
+		self::bootKernel();
 	}
 
 	protected function setUp()
 	{
 		$this->client = self::$staticClient;
+		$this->purgeDatabase();
+	}
+
+	/**
+	 * Clean up Kernel usage in this test.
+	 */
+	protected function tearDown()
+	{
+		// purposefully not calling parent class, which shuts down the kernel
+	}
+
+	protected function getService($id)
+	{
+		return self::$kernel->getContainer()
+			->get($id);
+	}
+
+	private function purgeDatabase()
+	{
+		$purger = new ORMPurger($this->getService('doctrine')->getManager());
+		$purger->purge();
 	}
 }
