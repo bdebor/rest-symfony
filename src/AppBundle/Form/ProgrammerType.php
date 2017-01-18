@@ -33,7 +33,7 @@ class ProgrammerType extends AbstractType
 			->add('tagLine')
 //            ->add('tagLine', 'textarea')
             ->add('powerLevel')
-            ->add('user')
+//            ->add('user')
         ;
     }
     
@@ -52,6 +52,6 @@ class ProgrammerType extends AbstractType
      */
     public function getName()
     {
-        return 'appbundle_programmer';
+        return 'programmer';
     }
 }
