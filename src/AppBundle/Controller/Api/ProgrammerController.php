@@ -88,6 +88,13 @@ class ProgrammerController extends BaseController
 			->getRepository('AppBundle:Programmer')
 			->findOneByNickname($nickname);
 
+		if (!$programmer) {
+			throw $this->createNotFoundException(sprintf(
+				'No programmer found with nickname "%s"',
+				$nickname
+			));
+		}
+
 		$data = array(
 			'nickname' => $programmer->getNickname(),
 			'avatarNumber' => $programmer->getAvatarNumber(),
@@ -95,6 +102,9 @@ class ProgrammerController extends BaseController
 			'tagLine' => $programmer->getTagLine(),
 		);
 
-		return new Response(json_encode($data), 200);
+		$response = new Response(json_encode($data), 200);
+		$response->headers->set('Content-Type', 'application/json');
+
+		return $response;
 	}
 }
