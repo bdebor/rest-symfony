@@ -23,12 +23,10 @@ $response = $client->post('/api/programmers', [
 
 echo $response;
 echo "\n\n";
-//
-////$programmerUrl = $response->getHeader('Location');
-////$response = $client->get($programmerUrl);
-//$response = $client->get('/api/programmers/'.$nickname);
 
-//$response = $client->get('/api/programmers');
+//$response = $client->get('/api/programmers/'.$nickname);
+$programmerUrl = $response->getHeader('Location');
+$response = $client->get($programmerUrl);
 
 echo $response;
 echo "\n\n";

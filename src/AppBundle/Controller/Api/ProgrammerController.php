@@ -77,19 +77,19 @@ class ProgrammerController extends BaseController
 
 		$data = $this->serializeProgrammer($programmer);
 		$response = new JsonResponse($data, 201);
-//		$programmerUrl = $this->generateUrl(
-//			'api_programmers_show',
-//			['nickname' => $programmer->getNickname()]
-//		);
-//		$response->headers->set('Location', $programmerUrl); // ??? Internal Server Error
-		$response->headers->set('Location', '$programmerUrl');
+		$programmerUrl = $this->generateUrl(
+			'api_programmers_show',
+			['nickname' => $programmer->getNickname()]
+		);
+		$response->headers->set('Location', $programmerUrl); // ??? 500 Error
+//		$response->headers->set('Location', '$programmerUrl');
 
 		return $response;
 	}
 
 
 	/**
-	 * @Route("/api/programmers/{nickname}", name="api_programmer_show")
+	 * @Route("/api/programmers/{nickname}", name="api_programmers_show")
 	 * @Method("GET")
 	 */
 	public function showAction($nickname)
@@ -113,7 +113,7 @@ class ProgrammerController extends BaseController
 	}
 
 	/**
-	 * @Route("/api/programmers", name="api_programmer_list")
+	 * @Route("/api/programmers", name="api_programmers_list")
 	 * @Method("GET")
 	 */
 	public function listAction()
