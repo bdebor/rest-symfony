@@ -11,7 +11,7 @@ $client = new Client([
     ]
 ]);
 
-$nickname = 'ObjectOrienter'.rand(0, 999);
+//$nickname = 'ObjectOrienter'.rand(0, 999);
 //$data = array(
 //	'nickname' => $nickname,
 //	'avatarNumber' => 5,
@@ -23,8 +23,12 @@ $nickname = 'ObjectOrienter'.rand(0, 999);
 //
 //echo $response;
 //echo "\n\n";
+//
+////$programmerUrl = $response->getHeader('Location');
+////$response = $client->get($programmerUrl);
+//$response = $client->get('/api/programmers/'.$nickname);
 
-$response = $client->get('/api/programmers/ObjectOrienter102');
+$response = $client->get('/api/programmers');
 
 echo $response;
 echo "\n\n";
