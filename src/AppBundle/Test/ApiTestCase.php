@@ -32,6 +32,11 @@ class ApiTestCase extends KernelTestCase
      */
     private $formatterHelper;
 
+    /**
+     * @var ConsoleOutput
+     */
+    private $output;
+
     public static function setUpBeforeClass()
     {
         self::$staticClient = new Client([
@@ -186,7 +191,10 @@ class ApiTestCase extends KernelTestCase
      */
     protected function printDebug($string)
     {
-        echo $string."\n";
+        if ($this->output === null) {
+            $this->output = new ConsoleOutput();
+        }
+        $this->output->writeln($string);
     }
 
     /**
