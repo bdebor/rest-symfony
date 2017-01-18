@@ -6,6 +6,12 @@ use GuzzleHttp\Client;
 
 class ProgrammerControllerTest extends ApiTestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->createUser('weaverryan');
+	}
+
     public function testPOST()
     {
 		$nickname = 'ObjectOrienter';;
