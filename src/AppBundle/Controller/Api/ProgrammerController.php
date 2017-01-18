@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Api;
 
 use AppBundle\Entity\Programmer;
 use AppBundle\Form\ProgrammerType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -75,8 +76,7 @@ class ProgrammerController extends BaseController
 		$em->flush();
 
 		$data = $this->serializeProgrammer($programmer);
-		$response = new Response(json_encode($data), 201);
-		$response->headers->set('Content-Type', 'application/json');
+		$response = new JsonResponse($data, 201);
 //		$programmerUrl = $this->generateUrl(
 //			'api_programmers_show',
 //			['nickname' => $programmer->getNickname()]
@@ -107,8 +107,7 @@ class ProgrammerController extends BaseController
 
 		$data = $this->serializeProgrammer($programmer);
 
-		$response = new Response(json_encode($data), 200);
-		$response->headers->set('Content-Type', 'application/json');
+		$response = new JsonResponse($data, 200);
 
 		return $response;
 	}
@@ -128,8 +127,7 @@ class ProgrammerController extends BaseController
 			$data['programmers'][] = $this->serializeProgrammer($programmer);
 		}
 
-		$response = new Response(json_encode($data), 200);
-		$response->headers->set('Content-Type', 'application/json');
+		$response = new JsonResponse($data, 200);
 
 		return $response;
 	}
