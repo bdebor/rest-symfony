@@ -1,19 +1,13 @@
 <?php
 namespace AppBundle\Tests\Controller\Api;
 
+use AppBundle\Test\ApiTestCase;
 use GuzzleHttp\Client;
 
-class ProgrammerControllerTest extends \PHPUnit_Framework_TestCase
+class ProgrammerControllerTest extends ApiTestCase
 {
     public function testPOST()
     {
-		$client = new Client([
-			'base_url' => 'http://localhost:8000',
-			'defaults' => [
-				'exceptions' => false
-			]
-		]);
-
 		$nickname = 'ObjectOrienter'.rand(0, 999);
 		$data = array(
 			'nickname' => $nickname,
@@ -21,7 +15,7 @@ class ProgrammerControllerTest extends \PHPUnit_Framework_TestCase
 			'tagLine' => 'a test dev!'
 		);
 
-		$response = $client->post('/api/programmers', [
+		$response = $this->client->post('/api/programmers', [
 			'body' => json_encode($data)
 		]);
 
