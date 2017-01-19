@@ -34,8 +34,7 @@ class ProgrammerController extends BaseController
 		$em->persist($programmer);
 		$em->flush();
 
-		$json = $this->serialize($programmer);
-		$response = new Response($json, 201);
+		$response = $this->createApiResponse($programmer, 201);
 		$programmerUrl = $this->generateUrl(
 			'api_programmers_show',
 			['nickname' => $programmer->getNickname()]
@@ -62,9 +61,7 @@ class ProgrammerController extends BaseController
 			));
 		}
 
-		$json = $this->serialize($programmer);
-
-		$response = new Response($json, 200);
+		$response = $this->createApiResponse($programmer, 200);
 
 		return $response;
 	}
@@ -79,9 +76,8 @@ class ProgrammerController extends BaseController
 			->getRepository('AppBundle:Programmer')
 			->findAll();
 
-		$json = $this->serialize(['programmers' => []]);
-
-		$response = new Response($json, 200);
+		$data = ['programmers' => []];
+		$response = $this->createApiResponse($data, 200);
 
 		return $response;
 	}
@@ -110,8 +106,7 @@ class ProgrammerController extends BaseController
 		$em->persist($programmer);
 		$em->flush();
 
-		$json = $this->serialize($programmer);
-		$response = new Response($json, 200);
+		$response = $this->createApiResponse($programmer, 200);
 
 		return $response;
 	}
@@ -133,12 +128,6 @@ class ProgrammerController extends BaseController
 		}
 
 		return new Response(null, 204);
-	}
-
-	private function serialize($data)
-	{
-		return $this->container->get('jms_serializer')
-			->serialize($data, 'json');
 	}
 
 	private function processForm(Request $request, FormInterface $form)
