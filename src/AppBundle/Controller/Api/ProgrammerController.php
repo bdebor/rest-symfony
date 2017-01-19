@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Api;
 
 use AppBundle\Entity\Programmer;
 use AppBundle\Form\ProgrammerType;
+use AppBundle\Form\UpdateProgrammerType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -104,9 +105,7 @@ class ProgrammerController extends BaseController
 			));
 		}
 
-		$form = $this->createForm(new ProgrammerType(), $programmer, array(
-			'is_edit' => true
-		));
+		$form = $this->createForm(new UpdateProgrammerType(), $programmer);
 		$this->processForm($request, $form);
 
 		$em = $this->getDoctrine()->getManager();
