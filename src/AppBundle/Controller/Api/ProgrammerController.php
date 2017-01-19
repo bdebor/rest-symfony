@@ -104,7 +104,9 @@ class ProgrammerController extends BaseController
 			));
 		}
 
-		$form = $this->createForm(new ProgrammerType(), $programmer);
+		$form = $this->createForm(new ProgrammerType(), $programmer, array(
+			'is_edit' => true
+		));
 		$this->processForm($request, $form);
 
 		$em = $this->getDoctrine()->getManager();

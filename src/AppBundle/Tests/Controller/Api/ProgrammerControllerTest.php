@@ -79,7 +79,7 @@ class ProgrammerControllerTest extends ApiTestCase
 		));
 
 		$data = array(
-			'nickname' => 'CowboyCoder',
+			'nickname' => 'CowgirlCoder',
 			'avatarNumber' => 2,
 			'tagLine' => 'foo',
 		);
@@ -90,5 +90,6 @@ class ProgrammerControllerTest extends ApiTestCase
 
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->asserter()->assertResponsePropertyEquals($response, 'avatarNumber', 2);
+		$this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'CowboyCoder');
 	}
 }
