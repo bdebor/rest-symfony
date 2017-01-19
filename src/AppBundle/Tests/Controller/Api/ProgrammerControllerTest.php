@@ -92,4 +92,14 @@ class ProgrammerControllerTest extends ApiTestCase
 		$this->asserter()->assertResponsePropertyEquals($response, 'avatarNumber', 2);
 		$this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'CowboyCoder');
 	}
+
+	public function testDELETEProgrammer()
+	{
+		$this->createProgrammer(array(
+			'nickname' => 'UnitTester',
+			'avatarNumber' => 3,
+		));
+		$response = $this->client->delete('/api/programmers/UnitTester');
+		$this->assertEquals(204, $response->getStatusCode());
+	}
 }

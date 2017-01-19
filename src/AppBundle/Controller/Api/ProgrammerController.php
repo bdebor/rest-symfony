@@ -90,7 +90,7 @@ class ProgrammerController extends BaseController
 	}
 
 	/**
-	 * @Route("/api/programmers/{nickname}")
+	 * @Route("/api/programmers/{nickname}", name="api_programmers_update")
 	 * @Method("PUT")
 	 */
 	public function updateAction($nickname, Request $request)
@@ -98,6 +98,7 @@ class ProgrammerController extends BaseController
 		$programmer = $this->getDoctrine()
 			->getRepository('AppBundle:Programmer')
 			->findOneByNickname($nickname);
+
 		if (!$programmer) {
 			throw $this->createNotFoundException(sprintf(
 				'No programmer found with nickname "%s"',
@@ -116,6 +117,30 @@ class ProgrammerController extends BaseController
 		$response = new JsonResponse($data, 200);
 
 		return $response;
+	}
+
+	/**
+	 * @Route("/api/programmers/{nickname}")
+	 * @Method("DELETE")
+	 */
+	public function deleteAction($nickname)
+	{
+		$programmer = $this->getDoctrine()
+			->getRepository('AppBundle:Programmer')
+			->findOneByNickname($nickname);
+
+		if (!$programmer) {
+			throw $this->createNotFoundException(sprintf(
+				'No programmer found with nickname "%s"',
+				$nickname
+			));
+		}
+
+		$em = $this->getDoctrine()->getManager();
+		$em->remove($programmer);
+		$em->flush();
+
+		return new Response(null, 204);
 	}
 
 	private function serializeProgrammer(Programmer $programmer)
