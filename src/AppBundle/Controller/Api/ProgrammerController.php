@@ -129,16 +129,11 @@ class ProgrammerController extends BaseController
 			->getRepository('AppBundle:Programmer')
 			->findOneByNickname($nickname);
 
-		if (!$programmer) {
-			throw $this->createNotFoundException(sprintf(
-				'No programmer found with nickname "%s"',
-				$nickname
-			));
+		if ($programmer) {
+			$em = $this->getDoctrine()->getManager();
+			$em->remove($programmer);
+			$em->flush();
 		}
-
-		$em = $this->getDoctrine()->getManager();
-		$em->remove($programmer);
-		$em->flush();
 
 		return new Response(null, 204);
 	}
