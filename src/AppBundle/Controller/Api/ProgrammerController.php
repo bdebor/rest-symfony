@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Api;
 
 use AppBundle\Entity\Programmer;
 use AppBundle\Form\ProgrammerType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,10 +23,9 @@ class ProgrammerController extends BaseController
      */
 	public function newAction(Request $request)
 	{
-		$data = json_decode($request->getContent(), true);
 		$programmer = new Programmer();
 		$form = $this->createForm(new ProgrammerType(), $programmer);
-		$form->submit($data);
+		$this->processForm($request, $form);
 
 		$programmer->setUser($this->findUserByUsername('weaverryan'));
 
@@ -104,9 +104,8 @@ class ProgrammerController extends BaseController
 			));
 		}
 
-		$data = json_decode($request->getContent(), true);
 		$form = $this->createForm(new ProgrammerType(), $programmer);
-		$form->submit($data);
+		$this->processForm($request, $form);
 
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($programmer);
@@ -126,5 +125,11 @@ class ProgrammerController extends BaseController
 			'powerLevel' => $programmer->getPowerLevel(),
 			'tagLine' => $programmer->getTagLine(),
 		);
+	}
+
+	private function processForm(Request $request, FormInterface $form)
+	{
+		$data = json_decode($request->getContent(), true);
+		$form->submit($data);
 	}
 }
