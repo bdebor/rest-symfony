@@ -76,7 +76,7 @@ class ProgrammerController extends BaseController
 			->getRepository('AppBundle:Programmer')
 			->findAll();
 
-		$data = ['programmers' => []];
+		$data = ['programmers' => $programmers];
 		$response = $this->createApiResponse($data, 200);
 
 		return $response;
