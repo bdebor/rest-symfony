@@ -34,8 +34,8 @@ class ProgrammerController extends BaseController
 		$em->persist($programmer);
 		$em->flush();
 
-		$data = $this->serializeProgrammer($programmer);
-		$response = new JsonResponse($data, 201);
+		$json = $this->serialize($programmer);
+		$response = new Response($json, 201);
 		$programmerUrl = $this->generateUrl(
 			'api_programmers_show',
 			['nickname' => $programmer->getNickname()]
@@ -62,9 +62,9 @@ class ProgrammerController extends BaseController
 			));
 		}
 
-		$data = $this->serializeProgrammer($programmer);
+		$json = $this->serialize($programmer);
 
-		$response = new JsonResponse($data, 200);
+		$response = new Response($json, 200);
 
 		return $response;
 	}
@@ -79,12 +79,9 @@ class ProgrammerController extends BaseController
 			->getRepository('AppBundle:Programmer')
 			->findAll();
 
-		$data = ['programmers' => []];
-		foreach($programmers as $programmer){
-			$data['programmers'][] = $this->serializeProgrammer($programmer);
-		}
+		$json = $this->serialize(['programmers' => []]);
 
-		$response = new JsonResponse($data, 200);
+		$response = new Response($json, 200);
 
 		return $response;
 	}
@@ -113,8 +110,8 @@ class ProgrammerController extends BaseController
 		$em->persist($programmer);
 		$em->flush();
 
-		$data = $this->serializeProgrammer($programmer);
-		$response = new JsonResponse($data, 200);
+		$json = $this->serialize($programmer);
+		$response = new Response($json, 200);
 
 		return $response;
 	}
@@ -138,14 +135,10 @@ class ProgrammerController extends BaseController
 		return new Response(null, 204);
 	}
 
-	private function serializeProgrammer(Programmer $programmer)
+	private function serialize($data)
 	{
-		return  array(
-			'nickname' => $programmer->getNickname(),
-			'avatarNumber' => $programmer->getAvatarNumber(),
-			'powerLevel' => $programmer->getPowerLevel(),
-			'tagLine' => $programmer->getTagLine(),
-		);
+		return $this->container->get('jms_serializer')
+			->serialize($data, 'json');
 	}
 
 	private function processForm(Request $request, FormInterface $form)
