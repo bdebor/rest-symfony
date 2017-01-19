@@ -91,7 +91,7 @@ class ProgrammerController extends BaseController
 
 	/**
 	 * @Route("/api/programmers/{nickname}", name="api_programmers_update")
-	 * @Method("PUT")
+	 * @Method({"PUT", "PATCH"})
 	 */
 	public function updateAction($nickname, Request $request)
 	{
@@ -151,6 +151,8 @@ class ProgrammerController extends BaseController
 	private function processForm(Request $request, FormInterface $form)
 	{
 		$data = json_decode($request->getContent(), true);
-		$form->submit($data);
+
+		$clearMissing = $request->getMethod() != 'PATCH';
+		$form->submit($data, $clearMissing);
 	}
 }
