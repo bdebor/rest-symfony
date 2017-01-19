@@ -49,6 +49,7 @@ class ProgrammerControllerTest extends ApiTestCase
 			'tagLine'
 		));
 		$this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'UnitTester');
+		// $this->debugResponse($response);
 	}
 
 	public function testGETProgrammersCollection()
