@@ -81,8 +81,7 @@ class ProgrammerController extends BaseController
 			'api_programmers_show',
 			['nickname' => $programmer->getNickname()]
 		);
-		$response->headers->set('Location', $programmerUrl); // ??? 500 Error
-//		$response->headers->set('Location', '$programmerUrl');
+		$response->headers->set('Location', $programmerUrl);
 
 		return $response;
 	}
@@ -127,6 +126,36 @@ class ProgrammerController extends BaseController
 			$data['programmers'][] = $this->serializeProgrammer($programmer);
 		}
 
+		$response = new JsonResponse($data, 200);
+
+		return $response;
+	}
+
+	/**
+	 * @Route("/api/programmers/{nickname}")
+	 * @Method("PUT")
+	 */
+	public function updateAction($nickname, Request $request)
+	{
+		$programmer = $this->getDoctrine()
+			->getRepository('AppBundle:Programmer')
+			->findOneByNickname($nickname);
+		if (!$programmer) {
+			throw $this->createNotFoundException(sprintf(
+				'No programmer found with nickname "%s"',
+				$nickname
+			));
+		}
+
+		$data = json_decode($request->getContent(), true);
+		$form = $this->createForm(new ProgrammerType(), $programmer);
+		$form->submit($data);
+
+		$em = $this->getDoctrine()->getManager();
+		$em->persist($programmer);
+		$em->flush();
+
+		$data = $this->serializeProgrammer($programmer);
 		$response = new JsonResponse($data, 200);
 
 		return $response;

@@ -14,7 +14,7 @@ class ProgrammerControllerTest extends ApiTestCase
 
     public function testPOST()
     {
-		$nickname = 'ObjectOrienter';;
+		$nickname = 'ObjectOrienter';
 		$data = array(
 			'nickname' => $nickname,
 			'avatarNumber' => 5,
@@ -67,5 +67,27 @@ class ProgrammerControllerTest extends ApiTestCase
 		$this->asserter()->assertResponsePropertyIsArray($response, 'programmers');
 		$this->asserter()->assertResponsePropertyCount($response, 'programmers', 2);
 		$this->asserter()->assertResponsePropertyEquals($response, 'programmers[1].nickname', 'CowboyCoder');
+	}
+
+	public function testPUTProgrammer()
+	{
+		$this->createProgrammer(array(
+			'nickname' => 'CowboyCoder',
+			'avatarNumber' => 5,
+			'tagLine' => 'foo',
+		));
+
+		$data = array(
+			'nickname' => 'CowboyCoder',
+			'avatarNumber' => 2,
+			'tagLine' => 'foo',
+		);
+
+		$response = $this->client->put('/api/programmers/CowboyCoder', [
+			'body' => json_encode($data)
+		]);
+
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->asserter()->assertResponsePropertyEquals($response, 'avatarNumber', 2);
 	}
 }
