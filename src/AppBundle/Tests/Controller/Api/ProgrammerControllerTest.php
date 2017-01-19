@@ -26,7 +26,7 @@ class ProgrammerControllerTest extends ApiTestCase
 		]);
 
 		$this->assertEquals(201, $response->getStatusCode());
-		$this->assertEquals('/api/programmers/'.$nickname, $response->getHeader('Location'));
+		$this->assertStringEndsWith('/api/programmers/'.$nickname, $response->getHeader('Location'));
 		$finishedData = json_decode($response->getBody(true), true);
 		$this->assertArrayHasKey('nickname', $finishedData);
 		$this->assertEquals($nickname, $finishedData['nickname']);
@@ -41,7 +41,6 @@ class ProgrammerControllerTest extends ApiTestCase
 
 		$response = $this->client->get('/api/programmers/UnitTester');
 		$this->assertEquals(200, $response->getStatusCode());
-		$data = $response->json();
 		$this->asserter()->assertResponsePropertiesExist($response, array(
 			'nickname',
 			'avatarNumber',
@@ -63,6 +62,7 @@ class ProgrammerControllerTest extends ApiTestCase
 		));
 
 		$response = $this->client->get('/api/programmers');
+		$this->printLastRequestUrl();
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->asserter()->assertResponsePropertyIsArray($response, 'programmers');
 		$this->asserter()->assertResponsePropertyCount($response, 'programmers', 2);

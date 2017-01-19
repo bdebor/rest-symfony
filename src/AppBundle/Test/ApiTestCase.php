@@ -16,6 +16,7 @@ use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use GuzzleHttp\Event\BeforeEvent;
 
 class ApiTestCase extends KernelTestCase
 {
@@ -46,7 +47,7 @@ class ApiTestCase extends KernelTestCase
     public static function setUpBeforeClass()
     {
         self::$staticClient = new Client([
-            'base_url' => 'http://localhost:8000/app_test.php',
+            'base_url' => 'http://localhost:8000',
             'defaults' => [
                 'exceptions' => false
             ]
@@ -54,6 +55,15 @@ class ApiTestCase extends KernelTestCase
         self::$history = new History();
         self::$staticClient->getEmitter()
             ->attach(self::$history);
+
+        // guaranteeing that /app_test.php is prefixed to all URLs
+        self::$staticClient->getEmitter()
+            ->on('before', function(BeforeEvent $event) {
+                $path = $event->getRequest()->getPath();
+                if (strpos($path, '/api') === 0) {
+                    $event->getRequest()->setPath('/app_test.php'.$path);
+                }
+            });
 
         self::bootKernel();
     }
