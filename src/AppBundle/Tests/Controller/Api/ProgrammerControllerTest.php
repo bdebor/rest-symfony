@@ -18,7 +18,8 @@ class ProgrammerControllerTest extends ApiTestCase
 		$data = array(
 			'nickname' => $nickname,
 			'avatarNumber' => 5,
-			'tagLine' => 'a test dev!'
+			'tagLine' => 'a test dev!',
+			'powerLevel' => 0 // ??? if not, error : DBALException: An exception occurred while executing 'INSERT INTO battle_programmer (nickname, avatarNumber, tagLine, powerLevel, user_id) VALUES (?, ?, ?, ?, ?)' with params ["ObjectOrienter", 5, "a test dev!", null, 51]: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'powerLevel' cannot be null
 		);
 
 		$response = $this->client->post('/api/programmers', [

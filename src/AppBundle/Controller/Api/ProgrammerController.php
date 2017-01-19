@@ -22,53 +22,11 @@ class ProgrammerController extends BaseController
      */
 	public function newAction(Request $request)
 	{
-//		$data = json_decode($request->getContent(), true);
-//		$programmer = new Programmer($data['nickname'], $data['avatarNumber']);
-//		$programmer->setTagLine($data['tagLine']);
-//		$programmer->setUser($this->findUserByUsername('weaverryan'));
-//
-//		$em = $this->getDoctrine()->getManager();
-//		$em->persist($programmer);
-//		$em->flush();
-//
-//		$response = new Response('It worked. Believe me - I\'m an API', 201);
-//		$response->headers->set('Location', '/some/programmer/url');
-//
-//		return $response;
-
-//		$data = json_decode($request->getContent(), true);
-//		$programmer = new Programmer();
-//
-//		$form = $this->createForm(new ProgrammerType(), $programmer);
-//		$form->submit($data);
-//
-//		$programmer->setUser($this->findUserByUsername('weaverryan'));
-//
-//		return new Response(serialize($programmer));
-//		Programmer {#711 ?
-//			-id: null
-//			-nickname: null
-//			-avatarNumber: null
-//			-tagLine: null
-//			-powerLevel: 0
-//			+" AppBundle\Entity\Programmer id": null // ??? error, AppBundle\Entity\Programmer
-//			+" AppBundle\Entity\Programmer nickname": "ObjectOrienter419"
-//			+" AppBundle\Entity\Programmer avatarNumber": 5
-//			+" AppBundle\Entity\Programmer tagLine": "a test dev!"
-//			+" AppBundle\Entity\Programmer powerLevel": null
-//		}
-//
-//		$em = $this->getDoctrine()->getManager();
-//		$em->persist($programmer);
-//		$em->flush();
-//
-//		return new Response('It worked. Believe me - I\'m an API');
-
 		$data = json_decode($request->getContent(), true);
 		$programmer = new Programmer();
-		$programmer->setNickname($data['nickname']);
-		$programmer->setAvatarNumber($data['avatarNumber']);
-		$programmer->setTagLine($data['tagLine']);
+		$form = $this->createForm(new ProgrammerType(), $programmer);
+		$form->submit($data);
+
 		$programmer->setUser($this->findUserByUsername('weaverryan'));
 
 		$em = $this->getDoctrine()->getManager();
@@ -85,7 +43,6 @@ class ProgrammerController extends BaseController
 
 		return $response;
 	}
-
 
 	/**
 	 * @Route("/api/programmers/{nickname}", name="api_programmers_show")
