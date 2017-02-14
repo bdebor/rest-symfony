@@ -25,19 +25,11 @@ class ProgrammerController extends BaseController
 	public function newAction(Request $request)
 	{
 		$programmer = new Programmer();
-		$form = $this->createForm(new ProgrammerType(), $programmer);
+		$form = $this->createForm(new ProgrammerType(), $programmer, array('csrf_protection' => false)); // 'csrf_protection' => false doesn't work in src/AppBundle/Form/ProgrammerType.php ???
 		$this->processForm($request, $form);
 
 		if (!$form->isValid()) {
-			$errors = $this->getErrorsFromForm($form);
-
-			$data = [
-				'type' => 'validation_error',
-				'title' => 'There was a validation error',
-				'errors' => $errors
-			];
-
-			return new JsonResponse($data, 400);
+			return $this->createValidationErrorResponse($form);
 		}
 
 		$programmer->setUser($this->findUserByUsername('weaverryan'));
@@ -111,8 +103,12 @@ class ProgrammerController extends BaseController
 			));
 		}
 
-		$form = $this->createForm(new UpdateProgrammerType(), $programmer);
+		$form = $this->createForm(new UpdateProgrammerType(), $programmer, array('csrf_protection' => false)); // 'csrf_protection' => false doesn't work in src/AppBundle/Form/ProgrammerType.php ???
 		$this->processForm($request, $form);
+
+		if (!$form->isValid()) {
+			return $this->createValidationErrorResponse($form);
+		}
 
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($programmer);
@@ -164,5 +160,17 @@ class ProgrammerController extends BaseController
 			}
 		}
 		return $errors;
+	}
+
+	private function createValidationErrorResponse(FormInterface $form){
+		$errors = $this->getErrorsFromForm($form);
+
+		$data = [
+			'type' => 'validation_error',
+			'title' => 'There was a validation error',
+			'errors' => $errors
+		];
+
+		return new JsonResponse($data, 400);
 	}
 }
