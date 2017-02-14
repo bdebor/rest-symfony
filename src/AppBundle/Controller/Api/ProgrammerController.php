@@ -27,6 +27,7 @@ class ProgrammerController extends BaseController
      */
 	public function newAction(Request $request)
 	{
+		throw new \Exception();
 		$programmer = new Programmer();
 		$form = $this->createForm(new ProgrammerType(), $programmer, array('csrf_protection' => false)); // 'csrf_protection' => false doesn't work in src/AppBundle/Form/ProgrammerType.php ???
 		$this->processForm($request, $form);
