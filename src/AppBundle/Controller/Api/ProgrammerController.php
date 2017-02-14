@@ -15,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use AppBundle\Controller\BaseController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Api\ApiProblem;
 
 class ProgrammerController extends BaseController
 {
@@ -165,13 +166,15 @@ class ProgrammerController extends BaseController
 	private function createValidationErrorResponse(FormInterface $form){
 		$errors = $this->getErrorsFromForm($form);
 
-		$data = [
-			'type' => 'validation_error',
-			'title' => 'There was a validation error',
-			'errors' => $errors
-		];
+		$apiProblem = new ApiProblem(
+			400,
+			'validation_error',
+			'There was a validation error'
+		);
 
-		$response = new JsonResponse($data, 400);
+		$apiProblem->set('errors', $errors);
+
+		$response = new JsonResponse($apiProblem->toArray(), $apiProblem->getStatusCode());
 		$response->headers->set('Content-Type', 'application/problem+json');
 
 		return $response;
