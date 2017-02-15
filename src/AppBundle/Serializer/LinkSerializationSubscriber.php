@@ -14,11 +14,13 @@ class LinkSerializationSubscriber implements EventSubscriberInterface
 {
     private $router;
     private $annotationReader;
+    private $expressionLanguage;
 
     public function __construct(RouterInterface $router, Reader $annotationReader)
     {
         $this->router = $router;
         $this->annotationReader = $annotationReader;
+        $this->expressionLanguage = new ExpressionLanguage();
     }
 
     public static function getSubscribedEvents()
@@ -27,8 +29,7 @@ class LinkSerializationSubscriber implements EventSubscriberInterface
             array(
                 'event' => 'serializer.post_serialize',
                 'method' => 'onPostSerialize',
-                'format' => 'json',
-                'class' => 'AppBundle\Entity\Programmer'
+                'format' => 'json'
             )
         );
     }
@@ -59,11 +60,19 @@ class LinkSerializationSubscriber implements EventSubscriberInterface
                 $links[$annotation->name] = $uri;
             }
         }
-        $visitor->addData('_links', $links);
+
+        if ($links) {
+            $visitor->addData('_links', $links);
+        }
     }
 
     private function resolveParams(array $params, $object)
     {
+        foreach ($params as $key => $param) {
+            $params[$key] = $this->expressionLanguage
+                ->evaluate($param, array('object' => $object));
+        }
+
         return $params;
     }
 }
