@@ -13,13 +13,16 @@ use Symfony\Component\Routing\RouterInterface;
 class LinkSerializationSubscriber implements EventSubscriberInterface
 {
     private $router;
+    private $annotationReader;
 
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, Reader $annotationReader)
     {
         $this->router = $router;
+        $this->annotationReader = $annotationReader;
     }
 
-    public static function getSubscribedEvents() {
+    public static function getSubscribedEvents()
+    {
         return array(
             array(
                 'event' => 'serializer.post_serialize',
@@ -30,17 +33,37 @@ class LinkSerializationSubscriber implements EventSubscriberInterface
         );
     }
 
-    public function onPostSerialize(ObjectEvent $event)
-    {
-        /** @var Programmer $programmer */
-        $programmer = $event->getObject();
+    public function onPostSerialize(ObjectEvent $event) {
+//        /** @var Programmer $programmer */
+//        $programmer = $event->getObject();
         /** @var JsonSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
-        $visitor->addData(
-            'uri',
-            $this->router->generate('api_programmers_show', [
-                'nickname' => $programmer->getNickname()
-            ])
-        );
+//        $visitor->addData(
+//            'uri',
+//            $this->router->generate('api_programmers_show', [
+//                'nickname' => $programmer->getNickname()
+//            ])
+//        );
+
+        $object      = $event->getObject();
+        $annotations = $this->annotationReader
+            ->getClassAnnotations(new \ReflectionObject($object));
+        $links       = array();
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Link) {
+                $uri = $this->router->generate(
+                    $annotation->route,
+                    $this->resolveParams($annotation->params, $object)
+                );
+                $links[$annotation->name] = $uri;
+            }
+        }
+        $visitor->addData('_links', $links);
+    }
+
+    private function resolveParams(array $params, $object)
+    {
+        return $params;
     }
 }
