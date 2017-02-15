@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Api;
 use AppBundle\Entity\Programmer;
 use AppBundle\Form\ProgrammerType;
 use AppBundle\Form\UpdateProgrammerType;
+use AppBundle\Pagination\PaginatedCollection;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\FormInterface;
@@ -76,7 +77,7 @@ class ProgrammerController extends BaseController
 	}
 
 	/**
-	 * @Route("/api/programmers", name="api_programmers_list")
+	 * @Route("/api/programmers", name="api_programmers_collection")
 	 * @Method("GET")
 	 */
 	public function listAction(Request $request)
@@ -97,11 +98,28 @@ class ProgrammerController extends BaseController
 			$programmers[] = $result;
 		}
 
-		$response = $this->createApiResponse([
-			'total' => $pagerfanta->getNbResults(),
-			'count' => count($programmers),
-			'programmers' => $programmers,
-		], 200);
+		$paginatedCollection = new PaginatedCollection($programmers, $pagerfanta->getNbResults());
+
+		$route = 'api_programmers_collection';
+		$routeParams = array();
+		$createLinkUrl = function($targetPage) use ($route, $routeParams) { // use ???
+			return $this->generateUrl($route, array_merge(
+				$routeParams,
+				array('page' => $targetPage)
+			));
+		};
+
+		$paginatedCollection->addLink('self', $createLinkUrl($page));
+		$paginatedCollection->addLink('first', $createLinkUrl(1));
+		$paginatedCollection->addLink('last', $createLinkUrl($pagerfanta->getNbPages()));
+		if ($pagerfanta->hasNextPage()) {
+			$paginatedCollection->addLink('next', $createLinkUrl($pagerfanta->getNextPage()));
+		}
+		if ($pagerfanta->hasPreviousPage()) {
+			$paginatedCollection->addLink('prev', $createLinkUrl($pagerfanta->getPreviousPage()));
+		}
+
+		$response = $this->createApiResponse($paginatedCollection, 200);
 
 		return $response;
 	}
