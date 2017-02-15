@@ -12,6 +12,13 @@ use Symfony\Component\Routing\RouterInterface;
 
 class LinkSerializationSubscriber implements EventSubscriberInterface
 {
+    private $router;
+
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
     public static function getSubscribedEvents() {
         return array(
             array(
@@ -25,6 +32,15 @@ class LinkSerializationSubscriber implements EventSubscriberInterface
 
     public function onPostSerialize(ObjectEvent $event)
     {
-
+        /** @var Programmer $programmer */
+        $programmer = $event->getObject();
+        /** @var JsonSerializationVisitor $visitor */
+        $visitor = $event->getVisitor();
+        $visitor->addData(
+            'uri',
+            $this->router->generate('api_programmers_show', [
+                'nickname' => $programmer->getNickname()
+            ])
+        );
     }
 }
