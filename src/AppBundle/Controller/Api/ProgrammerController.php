@@ -30,6 +30,8 @@ class ProgrammerController extends BaseController
      */
 	public function newAction(Request $request)
 	{
+		$this->denyAccessUnlessGranted('ROLE_USER');
+
 		$programmer = new Programmer();
 		$form = $this->createForm(new ProgrammerType(), $programmer, array('csrf_protection' => false)); // 'csrf_protection' => false doesn't work in src/AppBundle/Form/ProgrammerType.php ???
 		$this->processForm($request, $form);

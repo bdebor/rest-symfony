@@ -240,4 +240,13 @@ EOF;
 		$this->asserter()->assertResponsePropertyEquals($response, 'title', 'Not Found');
 		$this->asserter()->assertResponsePropertyEquals($response, 'detail', 'No programmer found with nickname "fake"');
 	}
+
+	public function testRequiresAuthentication()
+	{
+		$response = $this->client->post('/api/programmers', [
+			'body' => '[]'
+		]);
+
+		$this->assertEquals(401, $response->getStatusCode());
+	}
 }
