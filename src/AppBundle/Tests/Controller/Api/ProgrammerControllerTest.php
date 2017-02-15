@@ -50,6 +50,7 @@ class ProgrammerControllerTest extends ApiTestCase
 		));
 		$this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'UnitTester');
 		// $this->debugResponse($response);
+		$this->asserter()->assertResponsePropertyEquals($response, 'uri', '/api/programmers/UnitTester');
 	}
 
 	public function testGETProgrammersCollection()
