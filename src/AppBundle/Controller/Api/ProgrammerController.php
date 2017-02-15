@@ -5,6 +5,8 @@ namespace AppBundle\Controller\Api;
 use AppBundle\Entity\Programmer;
 use AppBundle\Form\ProgrammerType;
 use AppBundle\Form\UpdateProgrammerType;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,14 +79,29 @@ class ProgrammerController extends BaseController
 	 * @Route("/api/programmers", name="api_programmers_list")
 	 * @Method("GET")
 	 */
-	public function listAction()
+	public function listAction(Request $request)
 	{
-		$programmers = $this->getDoctrine()
-			->getRepository('AppBundle:Programmer')
-			->findAll();
+		$page = $request->query->get('page', 1);
 
-		$data = ['programmers' => $programmers];
-		$response = $this->createApiResponse($data, 200);
+		$qb = $this->getDoctrine()
+			->getRepository('AppBundle:Programmer')
+			->findAllQueryBuilder();
+
+		$adapter = new DoctrineORMAdapter($qb);
+		$pagerfanta = new Pagerfanta($adapter);
+		$pagerfanta->setMaxPerPage(10);
+		$pagerfanta->setCurrentPage($page);
+
+		$programmers = [];
+		foreach ($pagerfanta->getCurrentPageResults() as $result) {
+			$programmers[] = $result;
+		}
+
+		$response = $this->createApiResponse([
+			'total' => $pagerfanta->getNbResults(),
+			'count' => count($programmers),
+			'programmers' => $programmers,
+		], 200);
 
 		return $response;
 	}
