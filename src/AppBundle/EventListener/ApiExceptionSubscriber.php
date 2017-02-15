@@ -26,6 +26,10 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
+        if (strpos($event->getRequest()->getPathInfo(), '/api') !== 0) {
+            return;
+        }
+
         $e = $event->getException();
         $statusCode = $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500;
         if ($statusCode == 500 && $this->debug){
