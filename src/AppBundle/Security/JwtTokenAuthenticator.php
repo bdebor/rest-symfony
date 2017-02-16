@@ -5,6 +5,7 @@ namespace AppBundle\Security;
 use Doctrine\ORM\EntityManager;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -78,6 +79,10 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
     }
 
     public function start(Request $request, AuthenticationException $authException = null) {
-        // TODO: Implement start() method.
+        // called when authentication info is missing from a
+        // request that requires it
+        return new JsonResponse([
+            'error' => 'auth required'
+        ], 401);
     }
 }
