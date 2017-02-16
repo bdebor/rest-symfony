@@ -21,7 +21,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Api\ApiProblem;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use AppBundle\Api\ApiProblemException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+/**
+ * @Security("is_granted('ROLE_USER')")
+ */
 class ProgrammerController extends BaseController
 {
     /**
@@ -30,8 +34,6 @@ class ProgrammerController extends BaseController
      */
 	public function newAction(Request $request)
 	{
-		$this->denyAccessUnlessGranted('ROLE_USER');
-
 		$programmer = new Programmer();
 		$form = $this->createForm(new ProgrammerType(), $programmer, array('csrf_protection' => false)); // 'csrf_protection' => false doesn't work in src/AppBundle/Form/ProgrammerType.php ???
 		$this->processForm($request, $form);

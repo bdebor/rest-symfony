@@ -21,14 +21,9 @@ class ProgrammerControllerTest extends ApiTestCase
 			'powerLevel' => 0 // ??? if not, error : DBALException: An exception occurred while executing 'INSERT INTO battle_programmer (nickname, avatarNumber, tagLine, powerLevel, user_id) VALUES (?, ?, ?, ?, ?)' with params ["ObjectOrienter", 5, "a test dev!", null, 51]: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'powerLevel' cannot be null
 		);
 
-		$token = $this->getService('lexik_jwt_authentication.encoder')
-			->encode(['username' => 'weaverryan']);
-
 		$response = $this->client->post('/api/programmers', [
 			'body' => json_encode($data),
-			'headers' => [
-				'Authorization' => 'Bearer '.$token
-			]
+			'headers' => $this->getAuthorizedHeaders('weaverryan')
 		]);
 
 		$this->assertEquals(201, $response->getStatusCode());
@@ -45,7 +40,10 @@ class ProgrammerControllerTest extends ApiTestCase
 			'avatarNumber' => 3,
 		));
 
-		$response = $this->client->get('/api/programmers/UnitTester');
+		$response = $this->client->get(
+			'/api/programmers/UnitTester',
+			['headers' => $this->getAuthorizedHeaders('weaverryan')]
+		);
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->asserter()->assertResponsePropertiesExist($response, array(
 			'nickname',
@@ -65,7 +63,10 @@ class ProgrammerControllerTest extends ApiTestCase
 			'avatarNumber' => 3,
 		));
 
-		$response = $this->client->get('/api/programmers/UnitTester?deep=1');
+		$response = $this->client->get(
+			'/api/programmers/UnitTester?deep=1',
+			['headers' => $this->getAuthorizedHeaders('weaverryan')]
+		);
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->asserter()->assertResponsePropertiesExist($response, array(
 			'user.username'
@@ -83,7 +84,10 @@ class ProgrammerControllerTest extends ApiTestCase
 			'avatarNumber' => 5,
 		));
 
-		$response = $this->client->get('/api/programmers');
+		$response = $this->client->get(
+			'/api/programmers',
+			['headers' => $this->getAuthorizedHeaders('weaverryan')]
+		);
 		$this->printLastRequestUrl();
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->asserter()->assertResponsePropertyIsArray($response, 'items');
@@ -105,7 +109,10 @@ class ProgrammerControllerTest extends ApiTestCase
 			));
 		}
 
-		$response = $this->client->get('/api/programmers?filter=programmer');
+		$response = $this->client->get(
+			'/api/programmers?filter=programmer',
+			['headers' => $this->getAuthorizedHeaders('weaverryan')]
+		);
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->asserter()->assertResponsePropertyEquals(
 			$response,
@@ -117,7 +124,7 @@ class ProgrammerControllerTest extends ApiTestCase
 		$this->asserter()->assertResponsePropertyExists($response, '_links.next');
 
 		$nextLink = $this->asserter()->readResponseProperty($response, '_links.next');
-		$response = $this->client->get($nextLink);
+		$response = $this->client->get($nextLink, ['headers' => $this->getAuthorizedHeaders('weaverryan')]);
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->asserter()->assertResponsePropertyEquals(
 			$response,
@@ -127,7 +134,7 @@ class ProgrammerControllerTest extends ApiTestCase
 		$this->asserter()->assertResponsePropertyEquals($response, 'count', 10);
 
 		$lastLink = $this->asserter()->readResponseProperty($response, '_links.last');
-		$response = $this->client->get($lastLink);
+		$response = $this->client->get($lastLink, ['headers' => $this->getAuthorizedHeaders('weaverryan')]);
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->asserter()->assertResponsePropertyEquals(
 			$response,
@@ -153,7 +160,8 @@ class ProgrammerControllerTest extends ApiTestCase
 		);
 
 		$response = $this->client->put('/api/programmers/CowboyCoder', [
-			'body' => json_encode($data)
+			'body' => json_encode($data),
+			'headers' => $this->getAuthorizedHeaders('weaverryan')
 		]);
 
 		$this->assertEquals(200, $response->getStatusCode());
@@ -167,7 +175,10 @@ class ProgrammerControllerTest extends ApiTestCase
 			'nickname' => 'UnitTester',
 			'avatarNumber' => 3,
 		));
-		$response = $this->client->delete('/api/programmers/UnitTester');
+		$response = $this->client->delete(
+			'/api/programmers/UnitTester',
+			['headers' => $this->getAuthorizedHeaders('weaverryan')]
+		);
 		$this->assertEquals(204, $response->getStatusCode());
 	}
 
@@ -184,7 +195,8 @@ class ProgrammerControllerTest extends ApiTestCase
 		);
 
 		$response = $this->client->patch('/api/programmers/CowboyCoder', [
-			'body' => json_encode($data)
+			'body' => json_encode($data),
+			'headers' => $this->getAuthorizedHeaders('weaverryan')
 		]);
 
 		$this->assertEquals(200, $response->getStatusCode());
@@ -201,7 +213,8 @@ class ProgrammerControllerTest extends ApiTestCase
 
 		// 1) Create a programmer resource
 		$response = $this->client->post('/api/programmers', [
-			'body' => json_encode($data)
+			'body' => json_encode($data),
+			'headers' => $this->getAuthorizedHeaders('weaverryan')
 		]);
 
 		$this->assertEquals(400, $response->getStatusCode());
@@ -227,7 +240,8 @@ class ProgrammerControllerTest extends ApiTestCase
 EOF;
 
 		$response = $this->client->post('/api/programmers', [
-			'body' => $invalidBody
+			'body' => $invalidBody,
+			'headers' => $this->getAuthorizedHeaders('weaverryan')
 		]);
 
 		$this->debugResponse($response);
@@ -237,7 +251,7 @@ EOF;
 
 	public function test404Exception()
 	{
-		$response = $this->client->get('/api/programmers/fake');
+		$response = $this->client->get('/api/programmers/fake', ['headers' => $this->getAuthorizedHeaders('weaverryan')]);
 
 		$this->assertEquals(404, $response->getStatusCode());
 		$this->assertEquals('application/problem+json', $response->getHeader('Content-Type'));
@@ -249,7 +263,8 @@ EOF;
 	public function testRequiresAuthentication()
 	{
 		$response = $this->client->post('/api/programmers', [
-			'body' => '[]'
+			'body' => '[]',
+			// do not send auth!
 		]);
 
 		$this->assertEquals(401, $response->getStatusCode());
