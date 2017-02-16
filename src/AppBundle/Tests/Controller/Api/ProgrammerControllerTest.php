@@ -11,7 +11,7 @@ class ProgrammerControllerTest extends ApiTestCase
 		$this->createUser('weaverryan');
 	}
 
-    public function testPOST()
+    public function testPOSTProgrammerWorks()
     {
 		$nickname = 'ObjectOrienter';
 		$data = array(
@@ -21,8 +21,14 @@ class ProgrammerControllerTest extends ApiTestCase
 			'powerLevel' => 0 // ??? if not, error : DBALException: An exception occurred while executing 'INSERT INTO battle_programmer (nickname, avatarNumber, tagLine, powerLevel, user_id) VALUES (?, ?, ?, ?, ?)' with params ["ObjectOrienter", 5, "a test dev!", null, 51]: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'powerLevel' cannot be null
 		);
 
+		$token = $this->getService('lexik_jwt_authentication.encoder')
+			->encode(['username' => 'weaverryan']);
+
 		$response = $this->client->post('/api/programmers', [
-			'body' => json_encode($data)
+			'body' => json_encode($data),
+			'headers' => [
+				'Authorization' => 'Bearer '.$token
+			]
 		]);
 
 		$this->assertEquals(201, $response->getStatusCode());
