@@ -27,6 +27,11 @@ class TokenControllerTest extends ApiTestCase
 		$response = $this->client->post('/api/tokens', [
 			'auth' => ['weaverryan', 'IH8Pizza']
 		]);
+
 		$this->assertEquals(401, $response->getStatusCode());
+		$this->assertEquals('application/problem+json', $response->getHeader('Content-Type'));
+		$this->asserter()->assertResponsePropertyEquals($response, 'type', 'about:blank');
+		$this->asserter()->assertResponsePropertyEquals($response, 'title', 'Unauthorized');
+		$this->asserter()->assertResponsePropertyEquals($response, 'detail', 'Invalid credentials.');
 	}
 }

@@ -3,6 +3,7 @@
 namespace AppBundle\Security;
 
 use AppBundle\Api\ApiProblem;
+use AppBundle\Api\ResponseFactory;
 use Doctrine\ORM\EntityManager;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
@@ -28,10 +29,16 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
      */
     private $em;
 
-    public function __construct(JWTEncoderInterface $jwtEncoder, EntityManager $em){
+    /**
+     * @var ResponseFactory
+     */
+    private $responseFactory;
+
+    public function __construct(JWTEncoderInterface $jwtEncoder, EntityManager $em, ResponseFactory $responseFactory){
 
         $this->jwtEncoder = $jwtEncoder;
         $this->em = $em;
+        $this->responseFactory = $responseFactory;
     }
 
     public function getCredentials(Request $request) {
@@ -86,6 +93,6 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
         $message    = $authException ? $authException->getMessageKey() : 'Missing credentials';
         $apiProblem->set('detail', $message);
 
-        return new JsonResponse($apiProblem->toArray(), 401);
+        return $this->responseFactory->createResponse($apiProblem);
     }
 }
