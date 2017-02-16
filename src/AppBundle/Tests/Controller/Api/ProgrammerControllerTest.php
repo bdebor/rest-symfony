@@ -2,7 +2,6 @@
 namespace AppBundle\Tests\Controller\Api;
 
 use AppBundle\Test\ApiTestCase;
-use GuzzleHttp\Client;
 
 class ProgrammerControllerTest extends ApiTestCase
 {
