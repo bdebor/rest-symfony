@@ -40,7 +40,7 @@ class ProgrammerController extends BaseController
 			return $this->throwApiProblemValidationException($form);
 		}
 
-		$programmer->setUser($this->findUserByUsername('weaverryan'));
+		$programmer->setUser($this->getUser());
 
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($programmer);
