@@ -29,8 +29,11 @@ class BattleControllerTest extends ApiTestCase
 			'headers' => $this->getAuthorizedHeaders('weaverryan')
 		]);
 
+		$this->debugResponse($response);
 		$this->assertEquals(201, $response->getStatusCode());
 		$this->asserter()->assertResponsePropertyExists($response, 'didProgrammerWin');
+		$this->asserter()->assertResponsePropertyEquals($response, 'project', $project->getId());
+		$this->asserter()->assertResponsePropertyEquals($response, 'programmer', 'Fred');
 		// todo for later
 		//$this->assertTrue($response->hasHeader('Location'));
 	}
