@@ -271,6 +271,14 @@ EOF;
 		$this->assertEquals(401, $response->getStatusCode());
 	}
 
+	// FAILURES! ???, 500
+	// response with Postman :
+	// {
+	//  "detail": "Not privileged to request the resource.", // not "Invalid token"
+	//  "status": 401, // ok !!!
+	//  "type": "about:blank",
+	//  "title": "Unauthorized"
+	// }
 	public function testBadToken()
 	{
 		$response = $this->client->post('/api/programmers', [
@@ -280,8 +288,8 @@ EOF;
 			]
 		]);
 
+		$this->debugResponse($response);
 		$this->assertEquals(401, $response->getStatusCode());
 		$this->assertEquals('application/problem+json', $response->getHeader('Content-Type'));
-		$this->debugResponse($response);
 	}
 }
