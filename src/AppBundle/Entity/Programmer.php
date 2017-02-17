@@ -42,7 +42,7 @@ class Programmer
     /**
      * @var integer
      *
-     * @ORM\Column(name="avatarNumber", type="integer")
+     * @ORM\Column(name="avatarNumber", type="integer", nullable=true)
      * @Serializer\Expose
      */
     private $avatarNumber;

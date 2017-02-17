@@ -3,7 +3,7 @@ namespace AppBundle\Tests\Controller\Api;
 
 use AppBundle\Test\ApiTestCase;
 
-class TokenControllerTest extends ApiTestCase
+class BattleControllerTest extends ApiTestCase
 {
 	protected function setUp()
 	{

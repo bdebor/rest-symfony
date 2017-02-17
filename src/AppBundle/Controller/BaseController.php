@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Api\ApiProblem;
+use AppBundle\Api\ApiProblemException;
 use AppBundle\Repository\ProgrammerRepository;
 use AppBundle\Repository\UserRepository;
 use AppBundle\Repository\ProjectRepository;
@@ -9,6 +11,7 @@ use AppBundle\Repository\BattleRepository;
 use AppBundle\Repository\ApiTokenRepository;
 use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\HttpFoundation\Request;
@@ -134,5 +137,19 @@ abstract class BaseController extends Controller
         return new Response($json, $statusCode, array(
             'Content-Type' => 'application/json'
         ));
+    }
+
+    protected function processForm(Request $request, FormInterface $form)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if ($data === null) {
+            $apiProblem = new ApiProblem(400, ApiProblem::TYPE_INVALID_REQUEST_BODY_FORMAT);
+
+            throw new ApiProblemException($apiProblem);
+        }
+
+        $clearMissing = $request->getMethod() != 'PATCH';
+        $form->submit($data, $clearMissing);
     }
 }

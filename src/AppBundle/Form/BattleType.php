@@ -8,7 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ProgrammerType extends AbstractType
+class BattleType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder

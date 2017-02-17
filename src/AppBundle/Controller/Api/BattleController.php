@@ -2,12 +2,14 @@
 
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Form\BattleType;
+use AppBundle\Form\Model\BattleModel;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use AppBundle\Controller\BaseController;
 
-class ProgrammerController extends BaseController
+class BattleController extends BaseController
 {
     /**
      * @Route("/api/battles")
@@ -15,6 +17,20 @@ class ProgrammerController extends BaseController
      */
 	public function newAction(Request $request)
 	{
+		$battleModel = new BattleModel();
+		$form = $this->createForm(BattleType::class, $battleModel);
+		$this->processForm($request, $form);
 
+		if (!$form->isValid()) {
+			$this->throwApiProblemValidationException($form);
+		}
+
+		$battle = $this->getBattleManager()->battle(
+			$battleModel->getProgrammer(),
+			$battleModel->getProject()
+		);
+
+		// todo - set Location header
+		return $this->createApiResponse($battle, 201);
 	}
 }
