@@ -177,4 +177,15 @@ class ProgrammerController extends BaseController {
 
 		return new Response($programmer->getTagLine());
 	}
+
+	/**
+	 * @Route("/api/programmers/{nickname}/powerup")
+	 * @Method("POST")
+	 */
+	public function powerUpAction(Programmer $programmer)
+	{
+		$this->get('battle.power_manager')->powerUp($programmer);
+
+		return $this->createApiResponse($programmer);
+	}
 }
