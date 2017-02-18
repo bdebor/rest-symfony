@@ -28,6 +28,7 @@ class ProgrammerControllerTest extends ApiTestCase
 
 		$this->assertEquals(201, $response->getStatusCode());
 		$this->assertStringEndsWith('/api/programmers/'.$nickname, $response->getHeader('Location'));
+		$this->assertEquals('application/hal+json', $response->getHeader('Content-Type'));
 		$finishedData = json_decode($response->getBody(true), true);
 		$this->assertArrayHasKey('nickname', $finishedData);
 		$this->assertEquals($nickname, $finishedData['nickname']);
@@ -53,7 +54,7 @@ class ProgrammerControllerTest extends ApiTestCase
 		));
 		$this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'UnitTester');
 		// $this->debugResponse($response);
-		$this->asserter()->assertResponsePropertyEquals($response, '_links.self', $this->adjustUri('/api/programmers/UnitTester'));
+		$this->asserter()->assertResponsePropertyEquals($response, '_links.self.href', $this->adjustUri('/api/programmers/UnitTester'));
 	}
 
 	public function testGETProgrammerDeep()
