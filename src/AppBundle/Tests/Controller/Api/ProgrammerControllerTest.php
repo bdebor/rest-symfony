@@ -28,7 +28,7 @@ class ProgrammerControllerTest extends ApiTestCase
 
 		$this->assertEquals(201, $response->getStatusCode());
 		$this->assertStringEndsWith('/api/programmers/'.$nickname, $response->getHeader('Location'));
-		$this->assertEquals('application/hal+json', $response->getHeader('Content-Type'));
+		$this->assertEquals('application/vnd.codebattles+json', $response->getHeader('Content-Type'));
 		$finishedData = json_decode($response->getBody(true), true);
 		$this->assertArrayHasKey('nickname', $finishedData);
 		$this->assertEquals($nickname, $finishedData['nickname']);

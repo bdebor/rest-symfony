@@ -26,16 +26,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @Security("is_granted('ROLE_USER')")
  */
-class ProgrammerController extends BaseController
-{
-    /**
-     * @Route("/api/programmers")
+class ProgrammerController extends BaseController {
+	/**
+	 * @Route("/api/programmers")
 	 * @Method("POST")
-     */
-	public function newAction(Request $request)
-	{
+	 */
+	public function newAction(Request $request) {
 		$programmer = new Programmer();
-		$form = $this->createForm(new ProgrammerType(), $programmer, array('csrf_protection' => false)); // 'csrf_protection' => false doesn't work in src/AppBundle/Form/ProgrammerType.php ???
+		$form       = $this->createForm(new ProgrammerType(), $programmer, array('csrf_protection' => false)); // 'csrf_protection' => false doesn't work in src/AppBundle/Form/ProgrammerType.php ???
 		$this->processForm($request, $form);
 
 		if (!$form->isValid()) {
@@ -48,7 +46,7 @@ class ProgrammerController extends BaseController
 		$em->persist($programmer);
 		$em->flush();
 
-		$response = $this->createApiResponse($programmer, 201);
+		$response      = $this->createApiResponse($programmer, 201);
 		$programmerUrl = $this->generateUrl(
 			'api_programmers_show',
 			['nickname' => $programmer->getNickname()]
@@ -62,8 +60,7 @@ class ProgrammerController extends BaseController
 	 * @Route("/api/programmers/{nickname}", name="api_programmers_show")
 	 * @Method("GET")
 	 */
-	public function showAction($nickname)
-	{
+	public function showAction($nickname) {
 		$programmer = $this->getDoctrine()
 			->getRepository('AppBundle:Programmer')
 			->findOneByNickname($nickname);
@@ -84,8 +81,7 @@ class ProgrammerController extends BaseController
 	 * @Route("/api/programmers", name="api_programmers_collection")
 	 * @Method("GET")
 	 */
-	public function listAction(Request $request)
-	{
+	public function listAction(Request $request) {
 		$filter = $request->query->get('filter');
 
 		$qb = $this->getDoctrine()
@@ -104,8 +100,7 @@ class ProgrammerController extends BaseController
 	 * @Route("/api/programmers/{nickname}", name="api_programmers_update")
 	 * @Method({"PUT", "PATCH"})
 	 */
-	public function updateAction($nickname, Request $request)
-	{
+	public function updateAction($nickname, Request $request) {
 		$programmer = $this->getDoctrine()
 			->getRepository('AppBundle:Programmer')
 			->findOneByNickname($nickname);
@@ -137,8 +132,7 @@ class ProgrammerController extends BaseController
 	 * @Route("/api/programmers/{nickname}")
 	 * @Method("DELETE")
 	 */
-	public function deleteAction($nickname)
-	{
+	public function deleteAction($nickname) {
 		$programmer = $this->getDoctrine()
 			->getRepository('AppBundle:Programmer')
 			->findOneByNickname($nickname);
@@ -150,5 +144,13 @@ class ProgrammerController extends BaseController
 		}
 
 		return new Response(null, 204);
+	}
+
+	/**
+	 * @Route("/api/programmers/{nickname}/battles", name="api_programmers_battles_list")
+	 */
+	public function battlesListAction()
+	{
+
 	}
 }
