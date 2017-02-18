@@ -36,7 +36,7 @@ class BattleControllerTest extends ApiTestCase
 		$this->asserter()->assertResponsePropertyEquals($response, 'programmer', 'Fred');
 		$this->asserter()->assertResponsePropertyEquals(
 			$response,
-			'_links.programmer.href',
+			'_links.programmer',
 			$this->adjustUri('/api/programmers/Fred')
 		);
 		$this->asserter()->assertResponsePropertyEquals(
