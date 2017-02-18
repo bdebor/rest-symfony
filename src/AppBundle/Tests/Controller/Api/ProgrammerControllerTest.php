@@ -293,4 +293,28 @@ EOF;
 //		$this->assertEquals(401, $response->getStatusCode());
 //		$this->assertEquals('application/problem+json', $response->getHeader('Content-Type'));
 //	}
+
+	public function testFollowProgrammerBattlesLink(){
+		$programmer = $this->createProgrammer(array(
+			'nickname' => 'UnitTester',
+			'avatarNumber' => 3,
+		));
+		$project = $this->createProject('cool_project');
+
+		/** @var BattleManager $battleManager */
+		$battleManager = $this->getService('battle.battle_manager');
+		$battleManager->battle($programmer, $project);
+		$battleManager->battle($programmer, $project);
+		$battleManager->battle($programmer, $project);
+
+		$response = $this->client->get('/api/programmers/UnitTester', [
+			'headers' => $this->getAuthorizedHeaders('weaverryan')
+		]);
+		$url = $this->asserter()->readResponseProperty($response, '_links.battles');
+
+		$response = $this->client->get($url, [
+			'headers' => $this->getAuthorizedHeaders('weaverryan')
+		]);
+		$this->debugResponse($response);
+	}
 }

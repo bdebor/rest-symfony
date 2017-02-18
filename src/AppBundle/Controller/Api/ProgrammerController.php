@@ -149,8 +149,11 @@ class ProgrammerController extends BaseController {
 	/**
 	 * @Route("/api/programmers/{nickname}/battles", name="api_programmers_battles_list")
 	 */
-	public function battlesListAction()
+	public function battlesListAction(Programmer $programmer)
 	{
+		$battles = $this->getDoctrine()->getRepository('AppBundle:Battle')
+			->findBy(['programmer' => $programmer]);
 
+		return $this->createApiResponse($battles);
 	}
 }
