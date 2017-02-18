@@ -318,4 +318,20 @@ EOF;
 		$this->asserter()->assertResponsePropertyExists($response, 'items');
 		$this->debugResponse($response);
 	}
+
+	public function testEditTagline() {
+		$this->createProgrammer(array(
+			'nickname'     => 'UnitTester',
+			'avatarNumber' => 3,
+			'tagLine'      => 'The original UnitTester'
+		));
+
+		$response = $this->client->put('/api/programmers/UnitTester/tagline', [
+			'headers' => $this->getAuthorizedHeaders('weaverryan'),
+			'body' => 'New Tag Line'
+		]);
+
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('New Tag Line', (string) $response->getBody());
+	}
 }

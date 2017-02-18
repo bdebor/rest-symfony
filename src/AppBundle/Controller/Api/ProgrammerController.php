@@ -151,7 +151,7 @@ class ProgrammerController extends BaseController {
 	 */
 	public function battlesListAction(Programmer $programmer, Request $request)
 	{
-		$battlesQb = $this->getDoctrine()->getRepository('AppBundle:Battle')
+		$battlesQb  = $this->getDoctrine()->getRepository('AppBundle:Battle')
 			->createQueryBuilderForProgrammer($programmer);
 		$collection = $this->get('pagination_factory')->createCollection(
 			$battlesQb,
@@ -161,5 +161,20 @@ class ProgrammerController extends BaseController {
 		);
 
 		return $this->createApiResponse($collection);
+	}
+
+	/**
+	 * @Route("/api/programmers/{nickname}/tagline")
+	 * @Method("PUT")
+	 */
+	public function editTagLineAction(Programmer $programmer, Request $request)
+	{
+		$programmer->setTagLine($request->getContent());
+
+		$em = $this->getDoctrine()->getManager();
+		$em->persist($programmer);
+		$em->flush();
+
+		return new Response($programmer->getTagLine());
 	}
 }
