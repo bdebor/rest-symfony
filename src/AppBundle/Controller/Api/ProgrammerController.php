@@ -153,7 +153,8 @@ class ProgrammerController extends BaseController {
 	{
 		$battles = $this->getDoctrine()->getRepository('AppBundle:Battle')
 			->findBy(['programmer' => $programmer]);
+		$collection = new PaginatedCollection($battles, count($battles));
 
-		return $this->createApiResponse($battles);
+		return $this->createApiResponse($collection);
 	}
 }

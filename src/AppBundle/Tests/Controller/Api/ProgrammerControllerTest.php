@@ -315,6 +315,7 @@ EOF;
 		$response = $this->client->get($url, [
 			'headers' => $this->getAuthorizedHeaders('weaverryan')
 		]);
+		$this->asserter()->assertResponsePropertyExists($response, 'items');
 		$this->debugResponse($response);
 	}
 }
