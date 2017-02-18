@@ -3,6 +3,8 @@
 namespace AppBundle\Form;
 
 use AppBundle\Form\Model\BattleModel;
+use AppBundle\Repository\ProgrammerRepository;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,9 +18,14 @@ class BattleType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $user = $options['user'];
+
         $builder->add('programmerId', EntityType::class, [
             'class' => 'AppBundle\Entity\Programmer',
-            'property_path' => 'programmer'
+            'property_path' => 'programmer',
+            'query_builder' => function(ProgrammerRepository $repo) use ($user) {
+                return $repo->createQueryBuilderForUser($user);
+            }
         ])
         ->add('projectId', EntityType::class, [
             'class' => 'AppBundle\Entity\Project',
@@ -35,5 +42,7 @@ class BattleType extends AbstractType
             'data_class' => BattleModel::class,
             'csrf_protection' => false,
         ]);
+
+        $resolver->setRequired(['user']);
     }
 }
