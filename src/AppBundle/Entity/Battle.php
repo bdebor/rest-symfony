@@ -4,11 +4,17 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use AppBundle\Annotation\Link;
 
 /**
  * @ORM\Table(name="battle_battle")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\BattleRepository")
  * @Serializer\ExclusionPolicy("all")
+ * @Link(
+ *  "programmer",
+ *  route="api_programmers_show",
+ *  params={"nickname": "object.getProgrammerNickname()"}
+ * )
  */
 class Battle
 {
